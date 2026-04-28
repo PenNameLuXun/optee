@@ -174,6 +174,32 @@ CFG_CORE_ASYNC_NOTIF_GIC_INTID ?= 219
 endif
 endif #PLATFORM_FLAVOR==qemu_armv8a
 
+ifeq ($(PLATFORM_FLAVOR),jxl)
+include core/arch/arm/cpu/cortex-armv8-0.mk
+$(call force,CFG_WITH_ARM_TRUSTED_FW,y)
+$(call force,CFG_ARM_GICV3,y)
+CFG_ARM64_core ?= y
+supported-ta-targets ?= ta_arm64
+CFG_CORE_TZSRAM_EMUL_SIZE ?= 655360
+CFG_CORE_HEAP_SIZE ?= 196608
+CFG_MULTI_CORE_HALTING ?= y
+CFG_TEE_CORE_NB_CORE ?= 4
+CFG_CORE_CLUSTER_SHIFT ?= 2
+CFG_AUTO_MAX_PA_BITS ?= y
+# Secure SRAM at top of DRAM: [0xbf001000, 0xbff90000). BL31 sits above.
+CFG_TZDRAM_START ?= 0xbf001000
+CFG_TZDRAM_SIZE  ?= 0x00f8f000
+# Shared memory in non-secure DRAM, clear of kernel/DTB/initrd.
+CFG_SHMEM_START ?= 0x43000000
+CFG_SHMEM_SIZE  ?= 0x00200000
+
+CFG_CORE_ASYNC_NOTIF ?= y
+CFG_CORE_ASYNC_NOTIF_GIC_INTID ?= 219
+
+# Halt secondary cores until PSCI brings them up (same as qemu_armv8a).
+CFG_BOOT_SECONDARY_REQUEST ?= y
+endif #PLATFORM_FLAVOR==jxl
+
 ifeq ($(PLATFORM_FLAVOR),qemu_sbsa)
 CFG_CORE_HEAP_SIZE ?= 196608
 CFG_HALT_CORES_ON_PANIC ?= y

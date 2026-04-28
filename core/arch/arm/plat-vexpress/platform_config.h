@@ -81,6 +81,17 @@
 #define CONSOLE_UART_BASE	UART1_BASE
 #define IT_CONSOLE_UART		IT_UART1
 
+#elif defined(PLATFORM_FLAVOR_jxl)
+
+#define GIC_BASE		0x08000000
+#define UART0_BASE		0x09000000
+
+#define IT_UART0		32
+#define IT_SEC_PHY_TIMER	29
+
+#define CONSOLE_UART_BASE	UART0_BASE
+#define IT_CONSOLE_UART		IT_UART0
+
 #elif defined(PLATFORM_FLAVOR_qemu_sbsa)
 #define GIC_BASE		0x40060000
 #define SECURE_UART_BASE	0x60030000
@@ -146,6 +157,14 @@
 #define GIC_REDIST_BASE		0x080A0000
 #define GIC_REDIST_SIZE		0x00F60000
 #endif
+
+#elif defined(PLATFORM_FLAVOR_jxl)
+
+#define GICD_OFFSET		0
+#define GICC_OFFSET		0x10000
+/* CFG_ARM_GICV3 is forced on for jxl */
+#define GIC_REDIST_BASE		0x080A0000
+#define GIC_REDIST_SIZE		0x00F60000
 
 #elif defined(PLATFORM_FLAVOR_qemu_sbsa)
 #define GICD_OFFSET		0

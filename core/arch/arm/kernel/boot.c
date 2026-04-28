@@ -1209,7 +1209,7 @@ int boot_core_release(size_t core_idx, paddr_t entry)
 		return -1;
 
 	ns_entry_contexts[core_idx].entry_point = entry;
-	dmb();
+	dsb_ishst();
 	spin_table[core_idx] = 1;
 	dsb();
 	sev();
@@ -1229,7 +1229,7 @@ struct ns_entry_context *boot_core_hpen(void)
 	do {
 		wfe();
 	} while (!spin_table[get_core_pos()]);
-	dmb();
+	dsb_ishst();
 	return &ns_entry_contexts[get_core_pos()];
 #endif
 }

@@ -96,7 +96,7 @@ uint32_t sm_from_nsec(struct sm_ctx *ctx)
 
 	if (IS_ENABLED(CFG_CORE_WORKAROUND_ARM_NMFI)) {
 		/* Make sure FIQ is masked when jumping to SMC entry. */
-		ctx->sec.mon_spsr |= CPSR_F;
+		ctx->sec.mon_spsr |= ARM32_CPSR_F;
 	}
 
 	if (OPTEE_SMC_IS_FAST_CALL(ctx->sec.r0))
