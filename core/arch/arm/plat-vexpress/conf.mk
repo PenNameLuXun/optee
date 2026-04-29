@@ -189,12 +189,21 @@ CFG_AUTO_MAX_PA_BITS ?= y
 # Secure SRAM at top of DRAM: [0xbf001000, 0xbff90000). BL31 sits above.
 CFG_TZDRAM_START ?= 0xbf001000
 CFG_TZDRAM_SIZE  ?= 0x00f8f000
-# Shared memory in non-secure DRAM, clear of kernel/DTB/initrd.
-CFG_SHMEM_START ?= 0x43000000
+# Shared memory in non-secure DRAM, well past the kernel image rodata
+# (Linux is loaded at 0x42000000 and ~40 MiB of it is mapped read-only,
+# so anything inside [0x42000000, 0x44800000) cannot be used as SHM).
+# 0x4e000000 is far past kernel/DTB/initrd staging and is paired with a
+# reserved-memory `no-map` node in the optee DT overlay so the kernel
+# never linear-maps it as cached RAM.
+CFG_SHMEM_START ?= 0x4e000000
 CFG_SHMEM_SIZE  ?= 0x00200000
 
+# Async notifications. INTID must fit in the jxl GIC SPI range
+# (BL31 reports "Maximum SPI INTID supported: 95"). Use SPI 3 (INTID 35),
+# unused by UART/MMC. The default vexpress value of 219 panics OP-TEE in
+# gic_op_raise_pi at boot.
 CFG_CORE_ASYNC_NOTIF ?= y
-CFG_CORE_ASYNC_NOTIF_GIC_INTID ?= 219
+CFG_CORE_ASYNC_NOTIF_GIC_INTID ?= 35
 
 # Halt secondary cores until PSCI brings them up (same as qemu_armv8a).
 CFG_BOOT_SECONDARY_REQUEST ?= y
